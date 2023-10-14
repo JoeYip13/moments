@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import styles from "../../styles/SignInUpForm.module.css";
@@ -15,10 +15,9 @@ import {
     Alert,
 } from "react-bootstrap";
 import axios from "axios";
-import { SetCurrentUserContext } from "../../App";
+
 
 const SignUpForm = () => {
-    const setCurrentUser = useContext(SetCurrentUserContext);
     const [signUpData, setSignUpData] = useState({
         username: "",
         password1: "",
@@ -44,7 +43,6 @@ const SignUpForm = () => {
                 "/dj-rest-auth/registration/",
                 signUpData
             );
-            setCurrentUser(data.user);
             history.push("/signin");
         } catch (err) {
             setErrors(err.response?.data);
