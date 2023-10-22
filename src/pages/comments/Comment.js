@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Media } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { axiosRes } from "../../api/axiosDefaults";
@@ -6,8 +6,11 @@ import Avatar from "../../components/Avatar";
 import { MoreDropdown } from "../../components/MoreDropdown";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import styles from "../../styles/Comment.module.css";
+import CommentEditForm from "./CommentEditForm";
 
 const Comment = (props) => {
+    const [showEditForm, setShowEditForm] = useState(false);
+
     const {
         profile_id,
         profile_image,
@@ -35,7 +38,9 @@ const Comment = (props) => {
 
             setComments((prevComments) => ({
                 ...prevComments,
-                results: prevComments.results.filter((comment) => comment.id !== id)
+                results: prevComments.results.filter(
+                    (comment) => comment.id !== id
+                ),
             }));
         } catch (err) {}
     };
@@ -50,11 +55,22 @@ const Comment = (props) => {
                 <Media.Body className="align-self-center ml-2">
                     <span className={styles.Owner}>{owner}</span>
                     <span className={styles.Date}>{updated_at}</span>
-                    <p>{content}</p>
+                    {showEditForm ? (
+                        <CommentEditForm
+                            id={id}
+                            profile_id={profile_id}
+                            content={content}
+                            profileImage={profile_image}
+                            setComments={setComments}
+                            setShowEditForm={setShowEditForm}
+                        />
+                    ) : (
+                        <p>{content}</p>
+                    )}
                 </Media.Body>
-                {is_owner && (
+                {is_owner && !showEditForm && (
                     <MoreDropdown
-                        handleEdit={() => {}}
+                        handleEdit={() => setShowEditForm(true)}
                         handleDelete={handleDelete}
                     />
                 )}
